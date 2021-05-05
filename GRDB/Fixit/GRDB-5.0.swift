@@ -576,7 +576,6 @@ enum ValueScheduling {
     case unsafe(startImmediately: Bool)
 }
 
-#if SQLITE_HAS_CODEC
 extension Configuration {
     @available(*, unavailable, message: "Use Database.usePassphrase(_:) in Configuration.prepareDatabase instead.")
     public var passphrase: String? {
@@ -594,4 +593,3 @@ extension DatabaseQueue {
     @available(*, unavailable, message: "Use Database.changePassphrase(_:) instead")
     public func change(passphrase: String) throws { preconditionFailure() }
 }
-#endif

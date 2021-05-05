@@ -248,9 +248,7 @@ public final class Database: CustomStringConvertible, CustomDebugStringConvertib
         observationBroker.installCommitAndRollbackHooks()
         try activateExtendedCodes()
         
-        #if SQLITE_HAS_CODEC
         try validateSQLCipher()
-        #endif
         
         // Last step before we can start accessing the database.
         try configuration.setUp(self)
@@ -350,7 +348,6 @@ public final class Database: CustomStringConvertible, CustomDebugStringConvertib
         }
     }
     
-    #if SQLITE_HAS_CODEC
     private func validateSQLCipher() throws {
         // https://discuss.zetetic.net/t/important-advisory-sqlcipher-with-xcode-8-and-new-sdks/1688
         //
@@ -366,7 +363,6 @@ public final class Database: CustomStringConvertible, CustomDebugStringConvertib
                 """)
         }
     }
-    #endif
     
     private func validateFormat() throws {
         // Users are surprised when they open a picture as a database and
@@ -1160,7 +1156,6 @@ public final class Database: CustomStringConvertible, CustomDebugStringConvertib
     // MARK: - Erasing
     
     func erase() throws {
-        #if SQLITE_HAS_CODEC
         // SQLCipher does not support the backup API:
         // https://discuss.zetetic.net/t/using-the-sqlite-online-backup-api/2631
         // So we'll drop all database objects one after the other.
@@ -1190,9 +1185,6 @@ public final class Database: CustomStringConvertible, CustomDebugStringConvertib
                     try execute(sql: "PRAGMA foreign_keys = ON")
                 }
             })
-        #else
-        try DatabaseQueue().backup(to: self)
-        #endif
     }
     
     // MARK: - Backup
@@ -1241,7 +1233,6 @@ public final class Database: CustomStringConvertible, CustomDebugStringConvertib
     }
 }
 
-#if SQLITE_HAS_CODEC
 extension Database {
     
     // MARK: - Encryption
@@ -1314,7 +1305,6 @@ extension Database {
         }
     }
 }
-#endif
 
 extension Database {
     
